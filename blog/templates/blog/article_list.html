@@ -1,0 +1,52 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Accueil — Le Blog{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-hero">
+        <h1>Le Blog</h1>
+        <p>Pensées, récits et explorations</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'article-create' %}" class="btn btn-primary">+ Nouvel article</a>
+        {% endif %}
+    </div>
+
+    {% if articles %}
+    <div class="articles-grid">
+        {% for article in articles %}
+        <article class="card">
+            {% if article.image %}
+            <div class="card-image">
+                <img src="{{ article.image.url }}" alt="{{ article.titre }}">
+            </div>
+            {% endif %}
+            <div class="card-body">
+                {% if article.statut == 'brouillon' %}
+                    <span class="badge-draft">Brouillon</span>
+                {% endif %}
+                <p class="card-meta">{{ article.auteur.username }} — {{ article.date_publication|date:"d M Y" }}</p>
+                <h2><a href="{% url 'article-detail' article.pk %}">{{ article.titre }}</a></h2>
+                <p>{{ article.contenu|truncatewords:20 }}</p>
+                <div class="card-footer">
+                    <a href="{% url 'article-detail' article.pk %}" class="btn btn-primary">Lire →</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'article-update' article.pk %}" class="btn btn-secondary">✏️</a>
+                        <a href="{% url 'article-delete' article.pk %}" class="btn btn-danger">🗑️</a>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <p>Aucun article pour le moment.</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'article-create' %}" class="btn btn-primary">Créer le premier article</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

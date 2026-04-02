@@ -1,0 +1,65 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ titre_page }} — Le Blog{% endblock %}
+
+{% block content %}
+<div class="container-narrow">
+    <a href="{% url 'article-list' %}" class="back-link">← Retour</a>
+    <h1>{{ titre_page }}</h1>
+
+    <div class="form-card">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="form-errors">
+                <strong>⚠ Corrige les erreurs suivantes :</strong>
+                <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ field.label }} : {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label>Titre *</label>
+                {{ form.titre }}
+            </div>
+
+            <div class="form-group">
+                <label>Contenu *</label>
+                {{ form.contenu }}
+            </div>
+
+            <div class="form-group">
+                <label>Statut</label>
+                {{ form.statut }}
+            </div>
+
+            <div class="form-group">
+                <label>Date de publication</label>
+                {{ form.date_publication }}
+            </div>
+
+            <div class="form-group">
+                <label>Image</label>
+                {% if object.image %}
+                    <div class="current-image">
+                        <img src="{{ object.image.url }}" alt="Image actuelle">
+                        <p>Image actuelle</p>
+                    </div>
+                {% endif %}
+                {{ form.image }}
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'article-list' %}" class="btn btn-secondary">Annuler</a>
+                <button type="submit" class="btn btn-primary">{{ action }} l'article</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Supprimer l'article — Le Blog{% endblock %}
+
+{% block content %}
+<div class="container-narrow">
+    <div class="delete-card">
+        <h1>Supprimer cet article ?</h1>
+        <p>Cette action est <strong>irréversible</strong>. L'article suivant sera définitivement supprimé :</p>
+
+        <div class="delete-preview">
+            {% if article.image %}
+                <img src="{{ article.image.url }}" alt="{{ article.titre }}">
+            {% endif %}
+            <h2>{{ article.titre }}</h2>
+            <p>Par {{ article.auteur.username }} — {{ article.date_publication|date:"d F Y" }}</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-actions">
+                <a href="{% url 'article-list' %}" class="btn btn-secondary">← Annuler</a>
+                <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
