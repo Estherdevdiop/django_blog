@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import Article
 from .forms import ArticleForm
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
 
 
 class ArticleListView(ListView):
@@ -22,16 +24,24 @@ class ArticleDetailView(DetailView):
     template_name = 'blog/article_detail.html'
     context_object_name = 'article'
 
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return Article.objects.all()
+        return Article.objects.filter(statut='publie')
+
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
     form_class = ArticleForm
     template_name = 'blog/article_form.html'
+    
 
     def form_valid(self, form):
         form.instance.auteur = self.request.user
         messages.success(self.request, 'Article créé avec succès !')
         return super().form_valid(form)
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -48,6 +58,8 @@ class ArticleUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Article modifié avec succès !')
         return super().form_valid(form)
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -65,3 +77,5 @@ class ArticleDeleteView(LoginRequiredMixin, DeleteView):
     def form_valid(self, form):
         messages.success(self.request, 'Article supprimé.')
         return super().form_valid(form)
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
