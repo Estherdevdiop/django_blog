@@ -7,7 +7,7 @@
     <div class="page-hero">
         <h1>Le Blog</h1>
         <p>Pensées, récits et explorations</p>
-        {% if user.is_authenticated %}
+        {% if user.is_staff or user.is_superuser %}
             <a href="{% url 'article-create' %}" class="btn btn-primary">+ Nouvel article</a>
         {% endif %}
     </div>
@@ -30,7 +30,7 @@
                 <p>{{ article.contenu|truncatewords:20 }}</p>
                 <div class="card-footer">
                     <a href="{% url 'article-detail' article.pk %}" class="btn btn-primary">Lire →</a>
-                    {% if user.is_authenticated %}
+                    {% if user.is_staff or user.is_superuser %}
                         <a href="{% url 'article-update' article.pk %}" class="btn btn-secondary">✏️</a>
                         <a href="{% url 'article-delete' article.pk %}" class="btn btn-danger">🗑️</a>
                     {% endif %}
@@ -43,7 +43,7 @@
     {% else %}
     <div class="empty-state">
         <p>Aucun article pour le moment.</p>
-        {% if user.is_authenticated %}
+        {% if user.is_staff or user.is_superuser %}
             <a href="{% url 'article-create' %}" class="btn btn-primary">Créer le premier article</a>
         {% endif %}
     </div>

@@ -15,7 +15,7 @@
     <div class="article-meta">
         <span>Par {{ article.auteur.username }}</span>
         <span>{{ article.date_publication|date:"d F Y" }}</span>
-        {% if user.is_authenticated %}
+        {% if user.is_staff or user.is_superuser %}
             <a href="{% url 'article-update' article.pk %}" class="btn btn-secondary">✏️ Modifier</a>
             <a href="{% url 'article-delete' article.pk %}" class="btn btn-danger">🗑️ Supprimer</a>
         {% endif %}

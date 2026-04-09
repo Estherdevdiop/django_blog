@@ -15,8 +15,10 @@
         <nav>
             <a href="{% url 'article-list' %}">Accueil</a>
             {% if user.is_authenticated %}
+                {% if user.is_staff or user.is_superuser %}
                 <a href="{% url 'article-create' %}">+ Nouvel article</a>
                 <a href="/admin/">Admin</a>
+                {% endif %}
                 <form method="post" action="{% url 'logout' %}" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn-logout">Déconnexion</button>

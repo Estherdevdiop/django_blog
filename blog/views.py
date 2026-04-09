@@ -1,10 +1,9 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import Article
 from .forms import ArticleForm
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 
@@ -30,7 +29,7 @@ class ArticleDetailView(DetailView):
         return Article.objects.filter(statut='publie')
 
 
-class ArticleCreateView(LoginRequiredMixin, CreateView):
+class ArticleCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Article
     form_class = ArticleForm
     template_name = 'blog/article_form.html'
@@ -50,7 +49,7 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
-class ArticleUpdateView(LoginRequiredMixin, UpdateView):
+class ArticleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Article
     form_class = ArticleForm
     template_name = 'blog/article_form.html'
@@ -68,7 +67,7 @@ class ArticleUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class ArticleDeleteView(LoginRequiredMixin, DeleteView):
+class ArticleDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Article
     template_name = 'blog/article_confirm_delete.html'
     success_url = reverse_lazy('article-list')
